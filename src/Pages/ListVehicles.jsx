@@ -1,6 +1,9 @@
-
+import BackToHome from "../Components/BackToHome";
 export default function ListVehicles(){
     return (
-        <div>ListVehicles</div>
+        <div>
+            <BackToHome/>
+            ListVehicles
+        </div>
     );
 }
