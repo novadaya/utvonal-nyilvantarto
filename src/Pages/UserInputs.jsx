@@ -22,12 +22,11 @@ import '../App.css';
 export default function UserInput() {
     //az adatbázisból az járművek lekéréséhez szükséges adatok
     const carDataTable = "jarmuvek";
-    const [carDataKeys, setCarDataKeys] = useState([]); //dataKey-ek tárolásához kell
+    const [carDataDoc, setCarDataDoc] = useState([]); //dataKey-ek tárolásához kell
+    const [carsData, setCarsData] = useState([]); //a járművek adatait fogja tárolni
 
  //deklarálom az útvnalak rögzítéshaz szükséges state-eket, változókat
     const dataTable = "utvonalak"; 
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
     const [honnanTelepules, setHonnanTelepules] = useState('');
     const [honnanUtca, setHonnanUtca] = useState('');
     const [honnanHazszam, setHonnanHazszam] = useState('');
@@ -36,14 +35,22 @@ export default function UserInput() {
     const [hovaHazszam, setHovaHazszam] = useState('');
     const [partner, setPartner] = useState('');
     const [km, setKm] = useState('');
-    const [filledFieldsStatus, setfilledFieldsStatus] = useState('');
-    const [uploadStatus, setUploadStatus] = useState('');
+    const [responseStatus, setResponseStatus] = useState('');
     // const dataDoc -ot most nem használom dataRef.ref().child(dataTable).child(dataDoc).set(dataFields)
     //set helyett push-al teszem be az adatokat az adatbázisba, hogy minden rögzített adat
     // a firebase által generált unique document id-t kapjon
 
    const addUtvonalToDatabase= async ()=>{
-    //az adatok elküldése előtt elenörzöm, hogy van üres mező
+        //ellenörzöm hogy a km (kilométer) szám-e és nem üres
+        if (isNaN(km) || km === ''){
+            console.log("sdkfcj")
+            setResponseStatus("A kiométer (km) csak szám lehet")
+            setTimeout(() => {
+                setResponseStatus('');
+              }, 1800);
+                return;
+        }
+         //az adatok elküldése előtt elenörzöm, hogy van üres mező
         if (honnanTelepules.trim() === '' ||
         honnanUtca.trim() === '' ||
         honnanHazszam.trim() === '' ||
@@ -52,24 +59,23 @@ export default function UserInput() {
         hovaHazszam.trim() === '' ||
         partner.trim() === '' ||
         km.trim() === '') {
-        setfilledFieldsStatus('Kérlek, töltsd ki az összes kötelező mezőt!');
+        //visszajelzés a felhasználónak
+            setResponseStatus('Kérlek, töltsd ki az összes kötelező mezőt!');
         setTimeout(() => {
-            setfilledFieldsStatus('');
+            setResponseStatus('');
           }, 1800);
             return;
         }
         try {
-        //lekére az aktuális időt és frissítem a stateket
+        //lekérem az aktuális időt és beteszem a változókba
         const currentDateTime = new Date();
         const formattedDate = currentDateTime.toLocaleDateString();
         const formattedTime = currentDateTime.toLocaleTimeString();
-            setDate(formattedDate);
-            setTime(formattedTime);
         // az adabázisba bekerülő strukturált adatok
         const dataFields = {
             dateAndtime: {
-                date: date,
-                time: time
+                date: formattedDate,
+                time: formattedTime
             },
             honnan: {
                 telepules: honnanTelepules,
@@ -83,44 +89,43 @@ export default function UserInput() {
                 hazszam: hovaHazszam
             },
             km: km
+            //ide még a rendszámot ne felejtsem el betenni!!!
         }
         //elküldöm az adatokat at adatbázisnak
         await dataRef.ref().child(dataTable).push(dataFields);
-        setUploadStatus('Sikeres mentés!');
+        setResponseStatus('Sikeres mentés!');
        } catch (error) {
-        setUploadStatus('Ooopsz! Valami hiba történt');
+        setResponseStatus('Ooopsz! Valami hiba történt');
             }finally {
             setTimeout(() => {
-                setUploadStatus('');
+                setResponseStatus('');
             }, 1800);
     }
 }
    useEffect(() => {
-
-   /*   const fetchData = async () => {
-     const snapshot = await dataRef.ref().child(dataTable).child(dataKey).once('value');
-     const fetchedData = snapshot.val();
-     setData(fetchedData);
-
-      };
-       fetchData();
-
-       const fetchDataKeys = async () => {
-         const snapshot = await dataRef.ref().child(dataTable).once('value');
-         const keys = Object.keys(snapshot.val() || {}); // Ha nincs adat, akkor üres objektum, tehát itt kezeljük le
-   
-         setDataKeys(keys);
+       async function fetchCarDataDoc() { //rendszámok lekérdezése
+         const snapshot = await dataRef.ref().child(carDataTable).once('value');
+         const dataDocument = Object.keys(snapshot.val() || {});
+         setCarDataDoc(dataDocument);
+         console.log(carDataDoc)
        };
-   
-       fetchDataKeys(); */
+       fetchCarDataDoc();
     }, []); 
   
    
    return(
        <>
         <BackToHome/>
+        <div>
+              <h3>DataKeys for DataTable: {carDataTable}</h3>
+              <ul>
+                {carDataDoc.map((key, index) => (
+                  <li key={index}>{key}</li>
+                ))}
+              </ul>
+            </div>
+
             <h1>Útvonal rögzítése:</h1>
-            <CarsFromDatabase/>
             <div className="inputbox-container">
             <div className="input-container">
             <h2 className="h2">Honnan indul?</h2>
@@ -131,13 +136,13 @@ export default function UserInput() {
                     <input required className="addcar-Input" value={honnanUtca} type='text' onChange={(e)=>{setHonnanUtca(e.target.value)}}/> 
                     <label required className="addcar-Label">Házszám:</label>
                     <input required className="addcar-Input" value={honnanHazszam} type='text' onChange={(e)=>{setHonnanHazszam(e.target.value)}}/>
-                    <label required className="addcar-Label">Megtett Kilóméter:</label>
+                    <label required className="addcar-Label">Megtett Kilométer (km):</label>
                     <input required className="addcar-Input" value={km} type='text' onChange={(e)=>{setKm(e.target.value)}}/>
               
               </div>
             </div>
             <div className="input-container">
-            <h2 className="h2">Adja meg az uticélt:</h2>
+            <h2 className="h2">Adja meg az úticélt:</h2>
                 <div className="input-box">
                 <label className="addcar-Label">Partner neve:</label>
                     <input required className="addcar-Input" type='text' value={partner} onChange={(e)=>{setPartner(e.target.value)}} />
@@ -150,9 +155,7 @@ export default function UserInput() {
                 </div>
             </div>
             <button className="input-button" onClick={addUtvonalToDatabase}>Útvonal Rögzítése</button>
-            <h3 className="h3" >{uploadStatus}</h3>
-            <h3 className="h3" >{filledFieldsStatus}</h3>
-                
+            <h3 className="h3" >{responseStatus}</h3>   
             </div>
        </>
    );

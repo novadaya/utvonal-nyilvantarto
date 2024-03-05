@@ -9,19 +9,26 @@ export default function AddCar() {
     const [rendszam, setRendszam] = useState('');
     const [marka, setMarka] = useState('');
     const [fogyasztas, setFogyasztas] = useState('');
-    const [uploadStatus, setUploadStatus] = useState('');
-    const [filledFieldsStatus, setfilledFieldsStatus]= useState('');
+    const [responseStatus, setResponseStatus] = useState('');
 
     //Beteszem az adatbázisba az adatokat
 
     const addCarToDatabase= async ()=>{
+        //ellenörzöm hogy a fogyastás szám-e és nem üres
+        if (isNaN(fogyasztas) || fogyasztas === ''){
+            setResponseStatus("A fogyasztás csak szám lehet. A tizedes értéket ponttal add meg!");
+            setTimeout(() => {
+                setResponseStatus('');
+              }, 1800);
+                return;
+        }
         //az adatok elküldése előtt elenörzöm, hogy van üres mező
         if (rendszam.trim() === '' ||
         marka.trim() === '' ||
         fogyasztas.trim() === '') {
-        setfilledFieldsStatus('Kérlek, töltsd ki az összes kötelező mezőt!');
+        setResponseStatus('Kérlek, töltsd ki az összes kötelező mezőt!');
         setTimeout(() => {
-            setfilledFieldsStatus('');
+            setResponseStatus('');
           }, 1800);
             return;
         }
@@ -34,16 +41,15 @@ export default function AddCar() {
                 };
     
                 await dataRef.ref().child(dataCollection).child(rendszam).set(dataFields); 
-                console.log("ok");
                 setRendszam("");
                 setMarka('');
                 setFogyasztas('');
-                setUploadStatus('Sikeres mentés!');
+                setResponseStatus('Sikeres mentés!');
             } catch (error) {
-                setUploadStatus('Ooopsz! Valami hiba történt');
+                setResponseStatus('Ooopsz! Valami hiba történt');
             }finally {
                 setTimeout(() => {
-                    setUploadStatus('');
+                    setResponseStatus('');
                   }, 1800);
             }
             
@@ -65,8 +71,7 @@ export default function AddCar() {
                 <label className="addcar-Label">Fogyasztás:</label>
                     <input className="addcar-Input" value={fogyasztas} type="text" placeholder="liter/100 km" onChange={(e)=>{setFogyasztas(e.target.value)}}/>
                 <button className="default-button add-car-button" onClick={addCarToDatabase}>Rögzítés</button>
-                <h3 className="h3" >{uploadStatus}</h3>
-                <h3 className="h3" >{filledFieldsStatus}</h3>
+                <h3 className="h3" >{responseStatus}</h3>
             </div>
             </div>
      </>
