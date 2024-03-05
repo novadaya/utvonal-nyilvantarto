@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
-export default function CarsFromDatabase() {
+export default function CarList({ onSelectionChange }) {
   const [carList, setCarList] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,12 @@ export default function CarsFromDatabase() {
     };
 
     fetchData();
-  }, []); // A dependency array üres, így csak a komponens mountolásakor fut le a useEffect.
+  }, []);
+
+  const handleCheckboxChange = (rendszam) => {
+    // Itt kezelheted a kiválasztott checkbox-ok változását
+    onSelectionChange(rendszam);
+  };
 
   return (
     <div>
@@ -33,7 +38,14 @@ export default function CarsFromDatabase() {
       <ul>
         {carList.map(car => (
           <li key={car.rendszam}>
-            Rendszám: {car.rendszam}, Márka: {car.marka}, Fogyasztás: {car.fogyasztas}
+            <label>
+              <input
+                type="checkbox"
+                value={car.rendszam}
+                onChange={() => handleCheckboxChange(car.rendszam)}
+              />
+              {`${car.rendszam} - ${car.marka}, Fogyasztás: ${car.fogyasztas}`}
+            </label>
           </li>
         ))}
       </ul>
