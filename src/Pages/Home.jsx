@@ -6,7 +6,7 @@ export default function Home() {
     return (
         <div className="home">
             <div className="header">
-                    <h1 className="title">Útvonal Nyílvántartó</h1>
+                    <h1 className="title">Útvonal Nyilvántartó</h1>
                     <p>Válasz az alábbi lehetőségek közül!</p>
                 </div>
             <div className="box-container">

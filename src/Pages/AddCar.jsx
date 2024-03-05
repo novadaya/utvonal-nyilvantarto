@@ -1,20 +1,6 @@
 import BackToHome from "../Components/BackToHome";
 import React, { useState, useRef} from 'react';
 import { dataRef } from "../Components/FirebaseConfig";
-import {
-  doc,
-  onSnapshot,
-  updateDoc,
-  setDoc,
-  deleteDoc,
-  collection,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
-} from "firebase/firestore";
 import '../App.css';
 
 export default function AddCar() {
@@ -24,10 +10,21 @@ export default function AddCar() {
     const [marka, setMarka] = useState('');
     const [fogyasztas, setFogyasztas] = useState('');
     const [uploadStatus, setUploadStatus] = useState('');
+    const [filledFieldsStatus, setfilledFieldsStatus]= useState('');
 
     //Beteszem az adatbázisba az adatokat
 
     const addCarToDatabase= async ()=>{
+        //az adatok elküldése előtt elenörzöm, hogy van üres mező
+        if (rendszam.trim() === '' ||
+        marka.trim() === '' ||
+        fogyasztas.trim() === '') {
+        setfilledFieldsStatus('Kérlek, töltsd ki az összes kötelező mezőt!');
+        setTimeout(() => {
+            setfilledFieldsStatus('');
+          }, 1800);
+            return;
+        }
             //létrehozom az adatbázisba rögzítéshez szükséges mezőket
             try {
                 const dataFields = {
@@ -35,7 +32,6 @@ export default function AddCar() {
                     marka: marka,
                     fogyasztas: fogyasztas,
                 };
-                //setDataDoc(rendszam);
     
                 await dataRef.ref().child(dataCollection).child(rendszam).set(dataFields); 
                 console.log("ok");
@@ -48,7 +44,7 @@ export default function AddCar() {
             }finally {
                 setTimeout(() => {
                     setUploadStatus('');
-                  }, 1400);
+                  }, 1800);
             }
             
     }
@@ -69,7 +65,8 @@ export default function AddCar() {
                 <label className="addcar-Label">Fogyasztás:</label>
                     <input className="addcar-Input" value={fogyasztas} type="text" placeholder="liter/100 km" onChange={(e)=>{setFogyasztas(e.target.value)}}/>
                 <button className="default-button add-car-button" onClick={addCarToDatabase}>Rögzítés</button>
-                <h3>{uploadStatus}</h3>
+                <h3 className="h3" >{uploadStatus}</h3>
+                <h3 className="h3" >{filledFieldsStatus}</h3>
             </div>
             </div>
      </>
