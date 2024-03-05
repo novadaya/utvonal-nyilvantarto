@@ -1,7 +1,9 @@
 import "../App.css";
-import { useState } from "react";
-import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, set } from 'firebase/database';
+import React, { useEffect, useState } from "react";
+import { imgDB,txtDB } from '../Components/firebaseConfig/FirebaseConfig';
+import { v4 } from "uuid";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { addDoc, collection, getDocs } from "firebase/firestore";
  
 export default function SingleUserInput() {
     const [date, setDate] = useState('');
@@ -12,47 +14,54 @@ export default function SingleUserInput() {
     const [partner, setPartner] = useState('');
     const [km, setKm] = useState('');
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBEXnOuLfVgbEw5THtLsnTJMTEXdDkFCXI",
-        authDomain: "slotsfire-c2552.firebaseapp.com",
-        databaseURL: "https://slotsfire-c2552.firebaseio.com",
-        projectId: "slotsfire-c2552",
-        storageBucket: "slotsfire-c2552.appspot.com",
-        messagingSenderId: "337384928398",
-        appId: "1:337384928398:web:9e493cb3a9d92b6d5745df"
-      };
+    const [txt,setTxt] = useState('')
+    const [img,setImg] = useState('')
+    const [data,setData] = useState([])
 
-      initializeApp(firebaseConfig);
-      const database = getDatabase();
-      const usersRef = ref(database, 'users');
 
-      const user = {
-        name: "John Doe",
-        email: "johndoe@example.com",
-      };
-    
-      set(usersRef, user);
- 
-    const Push = () => {
-        database.ref("user").set({
-            name: date,
-            age: km,
-        }).catch(alert);
+    const handleUpload = (e) =>{
+        console.log(e.target.files[0])
+        const imgs = ref(imgDB,`Imgs/${v4()}`)
+        uploadBytes(imgs,e.target.files[0]).then(data=>{
+            console.log(data,"imgs")
+            getDownloadURL(data.ref).then(val=>{
+                setImg(val)
+            })
+        })
     }
- 
-    return (
-        <div  style={{ marginTop: 250 }}>
-            <center>
-                <input placeholder="Enter your name" value={date}
-                    onChange={(e) => setDate(e.target.value)} />
-                <br /><br />
-                <input placeholder="Enter your age" value={km}
-                    onChange={(e) => setKm(e.target.value)} />
-                <br /><br />
-                <button onClick={Push}>PUSH</button>
-            </center>
-        </div>
-    );
-}
 
+    const handleClick = async () =>{
+            const valRef = collection(txtDB,'txtData')
+            await addDoc(valRef,{txtVal:txt,imgUrl:img})
+            alert("Data added successfully")
+    }
+
+    const getData = async () =>{
+        const valRef = collection(txtDB,'txtData')
+        const dataDb = await getDocs(valRef)
+        const allData = dataDb.docs.map(val=>({...val.data(),id:val.id}))
+        setData(allData)
+        console.log(dataDb)
+    }
+
+    useEffect(()=>{
+        getData()
+})
+    console.log(data,"datadata")
+
+    return(
+        <div>
+             <input onChange={(e)=>setTxt(e.target.value)} /><br/>
+             <input type="file" onChange={(e)=>handleUpload(e)} /><br/><br/>
+             <button onClick={handleClick}>Add</button>
+
+             {
+                data.map(value=><div>
+                    <h1>{value.txtVal}</h1>
+                    <img src={value.imgUrl} height='200px' width='200px' /> 
+                </div>)
+             }
+        </div>
+    )
+}
 

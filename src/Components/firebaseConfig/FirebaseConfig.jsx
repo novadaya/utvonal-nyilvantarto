@@ -1,23 +1,17 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
-import { getFirestore } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage"
+import { getFirestore } from "firebase/firestore"
 
-  
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBEXnOuLfVgbEw5THtLsnTJMTEXdDkFCXI",
-  authDomain: "slotsfire-c2552.firebaseapp.com",
-  databaseURL: "https://slotsfire-c2552.firebaseio.com",
-  projectId: "slotsfire-c2552",
-  storageBucket: "slotsfire-c2552.appspot.com",
-  messagingSenderId: "337384928398",
-  appId: "1:337384928398:web:9e493cb3a9d92b6d5745df"
+  apiKey: "AIzaSyDqNldgCTzyRbZu7_pJdaNabsroTk78Hcs",
+  authDomain: "utvonaltervezo-d7071.firebaseapp.com",
+  projectId: "utvonaltervezo-d7071",
+  storageBucket: "utvonaltervezo-d7071.appspot.com",
+  messagingSenderId: "666628311431",
+  appId: "1:666628311431:web:7399fad2be04bb7d7fab22"
 };
+const app = initializeApp(firebaseConfig);
+const imgDB = getStorage(app)
+const txtDB = getFirestore(app)
 
-// Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const  database = getDatabase(app);
-
-    export default database;
+export {imgDB,txtDB};
