@@ -36,27 +36,40 @@ body {
 h1 {
   font-size: 2rem;
   margin: 1rem;
+  color: #352104;
 }
 
 p {
   margin-bottom: 1rem;
   font-size: 1.2rem;
+  color: #352104;
 }
 
-
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 8px;
+  margin: 10px;
+  padding: 20px;
+  box-shadow: inset 3px 5px 10px #352104;
+  background-color: transparent;
+}
 
 .box {
   flex: 1;
   min-width: 350px;
   margin: 10px;
   padding: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid #d6ae7b;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  box-shadow: inset 3px 5px 10px #352104;
+  background-color: transparent;
 }
 
 h2 {
@@ -64,45 +77,28 @@ h2 {
   margin-bottom: 15px;
 }
 
-button {
+.default-button {
   cursor: pointer;
   position: relative;
   padding: 10px 24px;
   font-size: 18px;
-  color: rgb(193, 163, 98);
-  border: 2px solid rgb(193, 163, 98);
-  border-radius: 34px;
-  background-color: transparent;
+  color:#d6ae7b;
+  background-color:#7c551d;
+  border-style:none;
+  border-radius: 25px;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
-  overflow: hidden;
 }
 
-button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 50px;
-  height: 50px;
-  border-radius: inherit;
-  scale: 0;
-  z-index: -1;
-  background-color: rgb(193, 163, 98);
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-}
 
-button:hover::before {
-  scale: 3;
-}
-
-button:hover {
-  color: #212121;
+.default-button:hover {
+  color: #352104;
+  background-color: #d6ae7b;
+  border: 2px solid #352104;
   scale: 1.05;
-  box-shadow: 0 0px 20px rgba(193, 163, 98,0.4);
 }
 
-button:active {
+.default-button:active {
   scale: 1;
 }
 
@@ -110,6 +106,41 @@ button:active {
   position: fixed;
   left: 20px;
   top: 20px;
+}
+
+.addcar-Label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  color:#352104;
+  
+}
+
+.addcar-Input {
+  width:80%;
+  height: 2.5rem;
+  background-color: transparent;
+  font-size: 1.2rem;
+  color:#352104;
+  font-weight: 500;
+  border-style: none;
+  border-radius: 8px;
+  box-shadow: inset 3px 4px 6px #352104;
+  padding: 5px;
+  
+}
+
+.addcar-Input:focus {
+  border-style: none;
+  box-shadow:
+  inset 2px 5px 10px #352104,
+  0px 0px 10px #7c551d;
+    }
+
+
+.add-car-button {
+  margin-top: 20px;
 }
 
 

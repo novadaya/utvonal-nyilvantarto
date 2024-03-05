@@ -3,6 +3,7 @@ import {Routes, Route, useLocation} from "react-router-dom";
 import Home from './Pages/Home';
 import UserInputs from './Pages/UserInputs';
 import ListVehicles from './Pages/ListVehicles';
+import AddCar from './Pages/AddCar';
 
 function App() {
   const location = useLocation();
@@ -11,6 +12,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="userinputs" element={<UserInputs />} />
         <Route path="listvehicles" element={<ListVehicles />} />
+        <Route path="addcar" element={<AddCar />} />
     </Routes>
   );
 }
