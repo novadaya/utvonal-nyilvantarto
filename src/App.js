@@ -2,7 +2,7 @@ import './App.css';
 import {Routes, Route, useLocation} from "react-router-dom";
 import Home from './Pages/Home';
 import UserInputs from './Pages/UserInputs';
-import ListVehicles from './Pages/ListVehicles';
+import DisplayUtvonalak from './Pages/DisplayUtvonalak';
 import AddCar from './Pages/AddCar';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     <Routes location={location} key={location.pathname}>
         <Route index element={<Home />} />
         <Route path="userinputs" element={<UserInputs />} />
-        <Route path="listvehicles" element={<ListVehicles />} />
+        <Route path="listvehicles" element={<DisplayUtvonalak />} />
         <Route path="addcar" element={<AddCar />} />
     </Routes>
   );
