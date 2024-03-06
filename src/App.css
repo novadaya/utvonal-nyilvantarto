@@ -104,10 +104,30 @@ h2 {
   scale: 1.05;
 }
 
+.back-button {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 24px;
+  font-size: 18px;
+  color:#d6ae7b;
+  background-color:#7c551d;
+  border-style:none;
+  border-bottom-right-radius: 40px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.back-button:hover {
+  color: #352104;
+  background-color: #d6ae7b;
+  border: 2px solid #352104;
+  scale: 1.05;
+}
+
 .back-to-home {
   position: fixed;
-  left: 20px;
-  top: 20px;
+  left: 0;
+  top: 0;
 }
 
 .addcar-Label {
@@ -143,6 +163,75 @@ h2 {
 
 .add-car-button {
   margin-top: 20px;
+}
+
+.carlist-box{
+ min-width: 350px;
+  margin:10px;
+  padding: 20px;
+  border: 1px solid #d6ae7b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: inset 3px 5px 10px #352104;
+  background-color: transparent;
+}
+.carlist-ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.carlist-li {
+  list-style: none;
+}
+
+.carlist-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #7c551d;
+  border-radius: 5px;
+  background-color: transparent;
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.carlist-checkbox:before {
+  content: "";
+  background-color: #7c551d;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.carlist-checkbox:checked:before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.carlist-checkbox-label {
+  font-size: 18px;
+  font-weight: 550;
+  color: #7c551d;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.carlist-label2 {
+  color: #7c551d;
+  cursor: pointer;
+  user-select: none;
 }
 
 

@@ -1,29 +1,13 @@
 import BackToHome from "../Components/BackToHome";
 import React, { useState, useRef, useEffect} from 'react';
 import { dataRef } from "../Components/FirebaseConfig";
-import CarsFromDatabase from "../Components/CarsFromDatabase";
+import CarList from "../Components/CarList";
 import './UserInputs.css';
-import {
-  doc,
-  onSnapshot,
-  updateDoc,
-  setDoc,
-  deleteDoc,
-  collection,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
-} from "firebase/firestore";
 import '../App.css';
 
 export default function UserInput() {
-    //az adatbázisból az járművek lekéréséhez szükséges adatok
-    const carDataTable = "jarmuvek";
-    const [carDataDoc, setCarDataDoc] = useState([]); //dataKey-ek tárolásához kell
-    const [carsData, setCarsData] = useState([]); //a járművek adatait fogja tárolni
+ //a járművek adatait fogja tárolni a checkbox-okból
+    const [selectedCars, setSelectedCars] = useState([]);
 
  //deklarálom az útvnalak rögzítéshaz szükséges state-eket, változókat
     const dataTable = "utvonalak"; 
@@ -40,90 +24,109 @@ export default function UserInput() {
     //set helyett push-al teszem be az adatokat az adatbázisba, hogy minden rögzített adat
     // a firebase által generált unique document id-t kapjon
 
+  const handleSelectionChange = (rendszam, checked) => {
+    //itt kezelem a checkbox-ok változását
+    setSelectedCars(
+      selectedCars.includes(rendszam) ?
+        selectedCars.filter((c) => c !== rendszam) :
+        selectedCars.concat([rendszam])
+    );
+  }
+
    const addUtvonalToDatabase= async ()=>{
+    //Kiválasztott e a felhasználó legalább egy autót
+        if (selectedCars.length === 0) {
+          setResponseStatus("Legalább egy járművet választanod kell!")
+            setTimeout(() => {
+                setResponseStatus('');
+              }, 1800);
+                return;
+        }
+    
         //ellenörzöm hogy a km (kilométer) szám-e és nem üres
-        if (isNaN(km) || km === ''){
-            console.log("sdkfcj")
+        if (isNaN(km) || km.trim() === ''){
             setResponseStatus("A kiométer (km) csak szám lehet")
             setTimeout(() => {
                 setResponseStatus('');
               }, 1800);
                 return;
         }
-         //az adatok elküldése előtt elenörzöm, hogy van üres mező
-        if (honnanTelepules.trim() === '' ||
-        honnanUtca.trim() === '' ||
-        honnanHazszam.trim() === '' ||
-        hovaTelepules.trim() === '' ||
-        hovaUtca.trim() === '' ||
-        hovaHazszam.trim() === '' ||
-        partner.trim() === '' ||
-        km.trim() === '') {
-        //visszajelzés a felhasználónak
-            setResponseStatus('Kérlek, töltsd ki az összes kötelező mezőt!');
-        setTimeout(() => {
+        
+        // Az adatok elküldése előtt ellenőrzöm, hogy van-e üres mező
+        const requiredFields = [
+          honnanTelepules, honnanUtca, honnanHazszam,
+          hovaTelepules, hovaUtca, hovaHazszam,
+          partner, km
+        ];
+
+        if (requiredFields.some(field => field.trim() === '')) {
+          // Visszajelzés a felhasználónak
+          setResponseStatus('Kérlek, töltsd ki az összes mezőt!');
+          setTimeout(() => {
             setResponseStatus('');
           }, 1800);
-            return;
+          return;
         }
-        try {
-        //lekérem az aktuális időt és beteszem a változókba
-        const currentDateTime = new Date();
-        const formattedDate = currentDateTime.toLocaleDateString();
-        const formattedTime = currentDateTime.toLocaleTimeString();
-        // az adabázisba bekerülő strukturált adatok
-        const dataFields = {
-            dateAndtime: {
+        //megnézem, hány autót választottak ki és
+        //anyiszor fogom az adatbázisba feltölteni az adatokat ahányat kijelöltek
+        //ez azért fontos, hogy a későbbi szűréseknél egyszerűbb dolgom legyen
+        for (let i = 0; i < selectedCars.length; i++) {
+          try {
+             //lekérem az aktuális időt és beteszem a változókba
+            const currentDateTime = new Date();
+            const formattedDate = currentDateTime.toLocaleDateString();
+            const formattedTime = currentDateTime.toLocaleTimeString();
+
+          // az adabázisba bekerülő strukturált adatok
+            const dataFields = {
+              dateAndtime: {
                 date: formattedDate,
                 time: formattedTime
-            },
-            honnan: {
+              },
+              honnan: {
                 telepules: honnanTelepules,
                 utca: honnanUtca,
                 hazszam: honnanHazszam
-            },
-            hova: {
+              },
+              hova: {
                 partner: partner,
                 telepules: hovaTelepules,
                 utca: hovaUtca,
                 hazszam: hovaHazszam
-            },
-            km: km
-            //ide még a rendszámot ne felejtsem el betenni!!!
-        }
-        //elküldöm az adatokat at adatbázisnak
-        await dataRef.ref().child(dataTable).push(dataFields);
-        setResponseStatus('Sikeres mentés!');
-       } catch (error) {
-        setResponseStatus('Ooopsz! Valami hiba történt');
-            }finally {
+              },
+              km: km,
+              rendszam: selectedCars[i], 
+            };
+        
+            // Elküldöm az adatokat a Firebase adatbázisnak
+            await dataRef.ref().child(dataTable).push(dataFields);
+            setResponseStatus('Sikeres mentés!');
+            // Állapotok visszaállítása üres stringre
+      
+
+          } catch (error) {
+            console.error(error);
+            setResponseStatus('Ooopsz! Valami hiba történt');
+          } finally {
             setTimeout(() => {
-                setResponseStatus('');
+              setResponseStatus('');
+              setHonnanTelepules('');
+              setHonnanUtca('');
+              setHonnanHazszam('');
+              setHovaTelepules('');
+              setHovaUtca('');
+              setHovaHazszam('');
+              setPartner('');
+              setKm('');
             }, 1800);
-    }
-}
-   useEffect(() => {
-       async function fetchCarDataDoc() { //rendszámok lekérdezése
-         const snapshot = await dataRef.ref().child(carDataTable).once('value');
-         const dataDocument = Object.keys(snapshot.val() || {});
-         setCarDataDoc(dataDocument);
-         console.log(carDataDoc)
-       };
-       fetchCarDataDoc();
-    }, []); 
-  
-   
+          }
+        }
+        
+} 
    return(
        <>
         <BackToHome/>
-        <div>
-              <h3>DataKeys for DataTable: {carDataTable}</h3>
-              <ul>
-                {carDataDoc.map((key, index) => (
-                  <li key={index}>{key}</li>
-                ))}
-              </ul>
-            </div>
+        <CarList onSelectionChange={handleSelectionChange}/>
 
             <h1>Útvonal rögzítése:</h1>
             <div className="inputbox-container">

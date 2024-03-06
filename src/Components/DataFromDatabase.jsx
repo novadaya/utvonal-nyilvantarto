@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/database';
+import { dataRef } from "./FirebaseConfig";
 
-export default function CarsFromDatabase() {
+export default function DataFromDatabase() {
   const [carList, setCarList] = useState([]);
 
   useEffect(() => {
-    // Lekérjük az autók adatait a Firebase adatbázisból
+    // Lekérem az autók adatait a Firebase adatbázisból
     const fetchData = async () => {
       try {
-        const snapshot = await firebase.database().ref('jarmuvek').once('value');
+        const snapshot = await dataRef.ref('jarmuvek').once('value');
         const cars = snapshot.val();
         if (cars) {
           const carArray = Object.keys(cars).map(rendszam => ({
@@ -20,13 +19,12 @@ export default function CarsFromDatabase() {
           setCarList(carArray);
         }
       } catch (error) {
-        console.error('Hiba adatainak lekérése közben:', error);
+        console.error('Oppsz! Valami hiba történt!', error);
       }
     };
 
     fetchData();
-  }, []); // A dependency array üres, így csak a komponens mountolásakor fut le a useEffect.
-
+  }, []); 
   return (
     <div>
       <h2>Autók listája</h2>

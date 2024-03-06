@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/database';
+import { dataRef } from './FirebaseConfig';
 
 export default function CarList({ onSelectionChange }) {
   const [carList, setCarList] = useState([]);
@@ -9,7 +8,7 @@ export default function CarList({ onSelectionChange }) {
     // Lekérjük az autók adatait a Firebase adatbázisból
     const fetchData = async () => {
       try {
-        const snapshot = await firebase.database().ref('jarmuvek').once('value');
+        const snapshot = await dataRef.ref('jarmuvek').once('value');
         const cars = snapshot.val();
         if (cars) {
           const carArray = Object.keys(cars).map(rendszam => ({
@@ -28,27 +27,25 @@ export default function CarList({ onSelectionChange }) {
   }, []);
 
   const handleCheckboxChange = (rendszam) => {
-    // Itt kezelheted a kiválasztott checkbox-ok változását
     onSelectionChange(rendszam);
   };
 
+
   return (
-    <div>
-      <h2>Autók listája</h2>
-      <ul>
+    <>
+    <div className='carlist-box'>
+      <h2>Valaszd ki a járművet/járműveket</h2>
+      <ul className='carlist-ul'>
         {carList.map(car => (
-          <li key={car.rendszam}>
-            <label>
-              <input
-                type="checkbox"
-                value={car.rendszam}
-                onChange={() => handleCheckboxChange(car.rendszam)}
-              />
-              {`${car.rendszam} - ${car.marka}, Fogyasztás: ${car.fogyasztas}`}
-            </label>
+          <li className='carlist-li' key={car.rendszam}>
+          <label className="carlist-checkbox-label">
+          <input type="checkbox" className="carlist-checkbox" value={car.rendszam} onChange={() => handleCheckboxChange(car.rendszam)}/>
+          {`${car.rendszam}`}</label>
+          <label className='carlist-label2'>{`${car.marka}, ${car.fogyasztas} liter/km`}</label>
           </li>
         ))}
       </ul>
     </div>
+    </>
   );
 }
