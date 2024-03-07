@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { dataRef } from "../Components/FirebaseConfig";
 import FuelAndDistance from '../Components/FuelAndDistance';
 
+
 // ...
 
 export default function DisplayUtvonalak() {
@@ -56,6 +57,7 @@ export default function DisplayUtvonalak() {
         <>
             <BackToHome/>
             <FuelAndDistance/>
+      
             <div>
                 <h2>Autók listája</h2>
             <ul>

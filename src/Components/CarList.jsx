@@ -5,7 +5,7 @@ export default function CarList({ onSelectionChange }) {
   const [carList, setCarList] = useState([]);
 
   useEffect(() => {
-    // Lekérjük az autók adatait a Firebase adatbázisból
+    // Lekérem az autók adatait a Firebase adatbázisból
     const fetchData = async () => {
       try {
         const snapshot = await dataRef.ref('jarmuvek').once('value');
@@ -25,9 +25,9 @@ export default function CarList({ onSelectionChange }) {
 
     fetchData();
   }, []);
-
-  const handleCheckboxChange = (rendszam) => {
-    onSelectionChange(rendszam);
+  // Itt adom át a parent komponensnek a szükséges adatokat
+  const handleCheckboxChange = (rendszam, fogyasztas, checked) => {
+    onSelectionChange(rendszam, fogyasztas, checked);
   };
 
 
@@ -39,7 +39,7 @@ export default function CarList({ onSelectionChange }) {
         {carList.map(car => (
           <li className='carlist-li' key={car.rendszam}>
           <label className="carlist-checkbox-label">
-          <input type="checkbox" className="carlist-checkbox" value={car.rendszam} onChange={() => handleCheckboxChange(car.rendszam)}/>
+          <input type="checkbox" className="carlist-checkbox" value={car.rendszam} onChange={() => handleCheckboxChange(car.rendszam, car.fogyasztas)}/>
           {`${car.rendszam}`}</label>
           <label className='carlist-label2'>{`${car.marka}, ${car.fogyasztas} liter/km`}</label>
           </li>

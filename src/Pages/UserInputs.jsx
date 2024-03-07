@@ -7,7 +7,7 @@ import '../App.css';
 
 export default function UserInput() {
  //a járművek adatait fogja tárolni a checkbox-okból
-    const [selectedCars, setSelectedCars] = useState([]);
+    const [selectedCars, setSelectedCars] = useState({});
 
  //deklarálom az útvnalak rögzítéshaz szükséges state-eket, változókat
     const dataTable = "utvonalak"; 
@@ -24,17 +24,37 @@ export default function UserInput() {
     //set helyett push-al teszem be az adatokat az adatbázisba, hogy minden rögzített adat
     // a firebase által generált unique document id-t kapjon
 
-  const handleSelectionChange = (rendszam, checked) => {
-    //itt kezelem a checkbox-ok változását
-    setSelectedCars(
-      selectedCars.includes(rendszam) ?
-        selectedCars.filter((c) => c !== rendszam) :
-        selectedCars.concat([rendszam])
-    );
-  }
-
+    const handleSelectionChange = (rendszam, fogyasztas, checked) => {
+      //itt kezelem a checkbox-ok változását
+      const isCarSelected = selectedCars.hasOwnProperty(rendszam);
+    
+      if (!isCarSelected) {
+        console.log("első");
+        // Ha a rendszám nincs az objektumban, akkor hozzáadom
+        setSelectedCars(prevCars => ({
+          ...prevCars,
+          [rendszam]: { rendszam, fogyasztas }
+        }));
+      } else if (isCarSelected) {
+        console.log("masodik");
+        // Ha a rendszám benne van az objektumban akkor törlöm
+        const { [rendszam]: deletedCar, ...rest } = selectedCars;
+        setSelectedCars(rest);
+      }
+    }    
+  
    const addUtvonalToDatabase= async ()=>{
-    //Kiválasztott e a felhasználó legalább egy autót
+    //a handleSelectionChange-ben kapott objektumot átalakítom
+    // iterálható legyen akey-ek alapján
+      const modifiedCars = {};
+      let index = 0;
+      for (const key in selectedCars) {
+        if (selectedCars.hasOwnProperty(key)) {
+          modifiedCars[index] = selectedCars[key];
+          index++;
+        }}
+
+       //Kiválasztott e a felhasználó legalább egy autót
         if (selectedCars.length === 0) {
           setResponseStatus("Legalább egy járművet választanod kell!")
             setTimeout(() => {
@@ -70,7 +90,8 @@ export default function UserInput() {
         //megnézem, hány autót választottak ki és
         //anyiszor fogom az adatbázisba feltölteni az adatokat ahányat kijelöltek
         //ez azért fontos, hogy a későbbi szűréseknél egyszerűbb dolgom legyen
-        for (let i = 0; i < selectedCars.length; i++) {
+      
+        for (let i = 0; i < Object.keys(modifiedCars).length; i++) {
           try {
              //lekérem az aktuális időt és beteszem a változókba
             const currentDateTime = new Date();
@@ -95,20 +116,19 @@ export default function UserInput() {
                 hazszam: hovaHazszam
               },
               km: km,
-              rendszam: selectedCars[i], 
+              rendszam: modifiedCars[i].rendszam,
+              fogyasztas: modifiedCars[i].fogyasztas
             };
         
             // Elküldöm az adatokat a Firebase adatbázisnak
             await dataRef.ref().child(dataTable).push(dataFields);
             setResponseStatus('Sikeres mentés!');
-            // Állapotok visszaállítása üres stringre
-      
-
           } catch (error) {
             console.error(error);
             setResponseStatus('Ooopsz! Valami hiba történt');
           } finally {
             setTimeout(() => {
+               // Állapotok visszaállítása üres stringre
               setResponseStatus('');
               setHonnanTelepules('');
               setHonnanUtca('');

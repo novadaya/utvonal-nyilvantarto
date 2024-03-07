@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { dataRef } from "../Components/FirebaseConfig";
+import { dataRef } from "./FirebaseConfig";
 // ...
 
 const DisplayCarData = () => {
@@ -8,7 +8,7 @@ const DisplayCarData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Lekérjük az összes autót az adatbázisból
+        // Lekérem az összes autót az adatbázisból
         const carsSnapshot = await dataRef.ref().child("jarmuvek").once('value');
         const carsData = [];
 
@@ -17,7 +17,7 @@ const DisplayCarData = () => {
           carsData.push(car);
         });
 
-        // Lekérjük az összes útvonalat az adatbázisból
+        // Lekérem az összes útvonalat az adatbázisból
         const utvonalakSnapshot = await dataRef.ref().child("utvonalak").once('value');
         const utvonalakData = [];
 
@@ -26,7 +26,7 @@ const DisplayCarData = () => {
           utvonalakData.push(utvonal);
         });
 
-        // Az autók és útvonalak összefűzése rendszám alapján
+        // Összefűzöm az úvonalakat, az autókkal a rendszám alapján
         const mergedData = carsData.map((car) => {
           const matchingUtvonalak = utvonalakData.filter((utvonal) => utvonal.rendszam === car.rendszam);
 
@@ -36,36 +36,33 @@ const DisplayCarData = () => {
           };
         });
 
-        // Beállítjuk az állapotot az összes autóval
+        // Beállítom az állapotot
         setCarData(mergedData);
       } catch (error) {
         console.error('Hiba történt az adatok lekérésekor:', error);
       }
     };
 
-    // Lekérjük az adatokat a komponens mountolásakor
+    
     fetchData();
-  }, []); // Az üres dependency array azt jelenti, hogy a useEffect csak egyszer fut le, a komponens mountolásakor
-
- 
+  }, []); 
   // Fogyasztás és megtett kilométerek számolása
   const calculateFuelConsumption = (utvonalak) => {
-    let totalKm = 0;
-    let totalFuel = 0;
+    let totalCarKm = 0;
+    let totalCarFuel = 0;
   
     utvonalak.forEach((utvonal) => {
-      totalKm += parseInt(utvonal.km, 10) || 0;
-  
-      // Ellenőrizd, hogy az autó fogyasztása létezik-e, mielőtt hozzáférnél hozzá
-      if (utvonal.car && utvonal.car.fogyasztas) {
-        //!!!!!!!!!!!!!!itt nem kapja meg a fogyasztas adatot !!!!!!!!
-        const fuelConsumption = (parseFloat(utvonal.car.fogyasztas) || 0) / 100;
-        totalFuel += totalKm * fuelConsumption;
-      }
+    totalCarKm += parseInt(utvonal.km);
+    const fuelConsumption = utvonal.fogyasztas.replace(/,/, '.');
+      console.log(fuelConsumption);
+      totalCarFuel += totalCarKm / 100 * fuelConsumption;
+
+
     });
-  
-    return { totalKm, totalFuel };
-  };
+
+
+    return { totalCarKm, totalCarFuel};
+  }; 
 
   return (
     <div>
@@ -80,8 +77,8 @@ const DisplayCarData = () => {
             {/* Fogyasztás és megtett kilométerek számolása */}
             {car.utvonalak && car.utvonalak.length > 0 && (
               <div>
-              <p>Összes megtett kilométer: {calculateFuelConsumption(car.utvonalak).totalKm}</p>
-              <p>Elhasznált üzemanyag: {calculateFuelConsumption(car.utvonalak).totalFuel}</p>
+              <p>Összes megtett kilométer: {calculateFuelConsumption(car.utvonalak).totalCarKm}</p>
+              <p>Elhasznált üzemanyag: {calculateFuelConsumption(car.utvonalak).totalCarFuel}</p>
             </div>
             )}
           </li>
