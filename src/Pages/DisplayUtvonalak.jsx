@@ -4,13 +4,11 @@ import { dataRef } from "../Components/FirebaseConfig";
 import AllTotal from "../Components/allTotal";
 
 
-// ...
-
 export default function DisplayUtvonalak() {
   const [utvonalak, setUtvonalak] = useState([]);
   const dataTable = "utvonalak"; 
   const [carList, setCarList] = useState([]);
-
+  
   useEffect(() => {
     // Lekérem az összes útvonalat az adatbázisból
     const fetchData = async () => {
@@ -52,32 +50,34 @@ export default function DisplayUtvonalak() {
     fetchCarData();
   }, []);
 
+  //keresés a talátlatok között
+  const [search, setSearch] = useState('');
+  const filteredUtvonalak = utvonalak.filter((utvonal) => utvonal.rendszam.toLowerCase().includes(search.toLowerCase()));
 
     return (
-        <>
-            <BackToHome/>
-        <AllTotal/>
-            <div>
-                <h2>Autók listája</h2>
+    <>
+      <BackToHome/>
+      <div className="box">
+       <div class="search">
+        <input placeholder="Keresés Rendszám alapján..." type="text" value={search} onChange={(e) => setSearch(e.target.value)}/>
+      </div>
+    </div>
+      <AllTotal />
+      <h1>Rögzített útvonalak:</h1>
+      <div className="box-container">
+        {filteredUtvonalak.map((utvonal, index) => (
+          <div className="box">
             <ul>
-              {carList.map(car => (
-                <li key={car.rendszam}>
-                  Rendszám: {car.rendszam}, Márka: {car.marka}, Fogyasztás: {car.fogyasztas}
-                </li>
-              ))}
-            </ul>
-      <h2>Összes útvonal</h2>
-      <ul>
-        {utvonalak.map((utvonal, index) => (
           <li key={index}>
-            <p>Dátum és idő: {utvonal.dateAndtime.date} {utvonal.dateAndtime.time}</p>
+            <h2>Rendszám: {utvonal.rendszam}</h2>
             <p>Honnan: {utvonal.honnan.telepules} {utvonal.honnan.utca} {utvonal.honnan.hazszam}</p>
             <p>Hova: {utvonal.hova.partner} {utvonal.hova.telepules} {utvonal.hova.utca} {utvonal.hova.hazszam}</p>
-            <p>Kilométer: {utvonal.km}</p>
-            <p>Rendszám: {utvonal.rendszam}</p>
+            <p className="km-p">Megtett Kilométer: {utvonal.km} km</p>
+            <p>Dátum és idő: {utvonal.dateAndtime.date} {utvonal.dateAndtime.time}</p>
           </li>
+          </ul>
+          </div>
         ))}
-      </ul>
     </div>
       </>
     );

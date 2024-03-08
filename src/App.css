@@ -234,6 +234,33 @@ h2 {
   user-select: none;
 }
 
+.km-p {
+  font-weight: 550;
+  color: #352104;
+}
+
+ul {
+  list-style: none;
+}
+
+.search {
+  display: inline-block;
+  position: relative;
+}
+
+.search input {
+  width: 350px;
+  padding: 10px;
+  border: none;
+  font-weight: 550;
+  color: #352104;
+  font-size: 1rem;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 2px 3px 5px #352104;
+  background-color: transparent;
+  
+}
 
 @media only screen and (max-width: 768px) {
   .card {

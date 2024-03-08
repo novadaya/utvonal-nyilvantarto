@@ -39,9 +39,9 @@ const AllTotal = () => {
   
 
   return (
-    <div>
-      <p>Total KM: {totalKm}</p>
-      <p>Total Consumption: {totalConsumption}</p>
+    <div className='box'>
+      <h1>Összes megtett km: {totalKm} km</h1>
+      <h2>Összes elhasznált üzemanyag: {totalConsumption} liter</h2>
     </div>
   );
 };
