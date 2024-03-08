@@ -1,7 +1,7 @@
 import BackToHome from "../Components/BackToHome";
 import { useEffect, useState } from 'react';
 import { dataRef } from "../Components/FirebaseConfig";
-import FuelAndDistance from '../Components/FuelAndDistance';
+import AllTotal from "../Components/allTotal";
 
 
 // ...
@@ -56,8 +56,7 @@ export default function DisplayUtvonalak() {
     return (
         <>
             <BackToHome/>
-            <FuelAndDistance/>
-      
+        <AllTotal/>
             <div>
                 <h2>Autók listája</h2>
             <ul>

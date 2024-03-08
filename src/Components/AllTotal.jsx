@@ -2,45 +2,48 @@ import { useEffect, useState } from 'react';
 import { dataRef } from "./FirebaseConfig";
 
 const AllTotal = () => {
-    //inicializálom az állapotokat az eredmények összesítéséhez
-    const [totalKm, setTotalKm] = useState(0);
-    const [totalConsumption, setTotalConsumption] = useState(0);
+    // Inicializálom az állapotokat az eredmények összesítéséhez
+    const [totalKm, setTotalKm] = useState('');
+    const [totalConsumption, setTotalConsumption] = useState('');
   
     useEffect(() => {
-      // Jarmuvek collection elérése
-      const jarmuvekCollection = dataRef.collection('jarmuvek');
+      // Jarmuvek collection elérése a Realtime Database-ben
+      const jarmuvekRef = dataRef.ref('utvonalak');
   
       // Az összes dokumentum lekérdezése
-      jarmuvekCollection.get()
-        .then((querySnapshot) => {
+      jarmuvekRef.once('value')
+        .then((snapshot) => {
           let totalKmSum = 0;
           let totalConsumptionSum = 0;
   
           // Minden dokumentumon végigmegyünk
-          querySnapshot.forEach((doc) => {
+          snapshot.forEach((childSnapshot) => {
             // Adatok kiolvasása a dokumentumból
-            const { km, fogyasztas } = doc.data();
-  
-            // Az összesített értékek frissítése
-            totalKmSum += km;
-            totalConsumptionSum += km * fogyasztas;
+            const { km, fogyasztas } = childSnapshot.val();
+          
+            // Az összesített értékeket frissítem
+            totalKmSum += km * 1;
+            let formatedFogyasztas = fogyasztas.replace(/,/, '.');
+            totalConsumptionSum += km * formatedFogyasztas  / 100;
+           
           });
   
-          // Az állapotok frissítése
+          // Az állapotokat frissítem csak egyszer, a cikluson kívül
           setTotalKm(totalKmSum);
-          setTotalConsumption(totalConsumptionSum);
+          setTotalConsumption(totalConsumptionSum.toFixed(2));
         })
         .catch((error) => {
-          console.error("Ooops! Valaimi hiba történt");
+          console.error("Ooops! Valami hiba történt", error);
         });
     }, []);
-    return (
-      <div>
-        <p>Total KM: {totalKm}</p>
-        <p>Total Consumption: {totalConsumption}</p>
-      </div>
-    );
-  };
-  export default AllTotal;
   
 
+  return (
+    <div>
+      <p>Total KM: {totalKm}</p>
+      <p>Total Consumption: {totalConsumption}</p>
+    </div>
+  );
+};
+
+export default AllTotal;

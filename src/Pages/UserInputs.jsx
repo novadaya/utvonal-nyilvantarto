@@ -1,5 +1,5 @@
 import BackToHome from "../Components/BackToHome";
-import React, { useState, useRef, useEffect} from 'react';
+import React, { useState} from 'react';
 import { dataRef } from "../Components/FirebaseConfig";
 import CarList from "../Components/CarList";
 import './UserInputs.css';
