@@ -5,11 +5,12 @@
     flex-wrap: wrap;
     margin: 10px;
     padding: 20px;
-    border: 1px solid #d6ae7b;
-    flex-direction: row;
-    border-radius: 8px;
-    box-shadow: inset 3px 5px 10px #352104;
-    background-color: transparent;
+    border-radius: var(--border-radius);
+  background: var(--background-style);
+  box-shadow: var(--box-shadow);
+  backdrop-filter: var(--backdrop-filter-style);
+  -webkit-backdrop-filter: var(--backdrop-filter-style);
+  border: var(--border-style);
   }
 
   .input-box {
@@ -20,9 +21,9 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        border-radius: 8px;
-        box-shadow: inset 3px 5px 10px #352104;
-    background-color: transparent;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow2);
+        background-color: transparent;
   }
 
   .h2 {
@@ -36,8 +37,8 @@
     margin-top: 2.7rem;
     width: 100%;
     font-size: 18px;
-    color:#d6ae7b;
-    background-color:#7c551d;
+    color:var(--color-light);
+    background-color:var(--color-middle);
     border-style:none;
     border-radius: 25px;
     font-weight: 600;
@@ -46,9 +47,9 @@
   
   
   .input-button:hover {
-    color: #352104;
-    background-color: #d6ae7b;
-    border: 2px solid #352104;
+    color: var(--color-dark);
+    background-color: var(--color-light);
+    border: 2px solid var(--color-dark);
   }
   
   .input-button:active {
