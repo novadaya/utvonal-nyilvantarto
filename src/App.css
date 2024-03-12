@@ -20,14 +20,16 @@
 
 body {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color:var(--color-dark);
   background-image: url(./Asstes/tablat-back-big.webp);
-  background-size: cover;
+  background-size:cover;
   background-position: center;
+  background-repeat: no-repeat;
+
  }
 
 .home {
@@ -73,18 +75,6 @@ p {
   border: var(--border-style);
 }
 
-.display-container{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin: 10px;
-  padding: 20px;
-  border-radius: var(--border-radius);
-background: var(--background-style);
-box-shadow: var(--box-shadow);
-backdrop-filter: var(--backdrop-filter-style);
--webkit-backdrop-filter: var(--backdrop-filter-style);
-border: var(--border-style);
-}
 
 .box {
   flex: 1;
@@ -135,6 +125,13 @@ h2 {
   scale: 1.05;
 }
 
+.back-to-home {
+  position: relative;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
 .back-button {
   cursor: pointer;
   position: relative;
@@ -154,13 +151,6 @@ h2 {
   background-color: var(--color-light);
   border: 2px solid var(--color-dark);
   scale: 1.05;
-}
-
-.back-to-home {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 10;
 }
 
 .addcar-Label {
