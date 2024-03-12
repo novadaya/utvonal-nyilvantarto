@@ -52,6 +52,4 @@
     border: 2px solid var(--color-dark);
   }
   
-  .input-button:active {
-    scale: 1;
-  }
+  
