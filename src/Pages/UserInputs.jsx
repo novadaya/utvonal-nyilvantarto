@@ -1,6 +1,6 @@
 import BackToHome from "../Components/BackToHome";
 import React, { useState} from 'react';
-import { dataRef } from "../Components/FirebaseConfig";
+import db from "../Components/FireStoreDb";
 import CarList from "../Components/CarList";
 import './UserInputs.css';
 import '../App.css';
@@ -10,7 +10,7 @@ export default function UserInput() {
     const [selectedCars, setSelectedCars] = useState({});
 
  //deklarálom az útvnalak rögzítéshaz szükséges state-eket, változókat
-    const dataTable = "utvonalak"; 
+    const dataCollection = "utvonalak"; 
     const [honnanTelepules, setHonnanTelepules] = useState('');
     const [honnanUtca, setHonnanUtca] = useState('');
     const [honnanHazszam, setHonnanHazszam] = useState('');
@@ -20,8 +20,8 @@ export default function UserInput() {
     const [partner, setPartner] = useState('');
     const [km, setKm] = useState('');
     const [responseStatus, setResponseStatus] = useState('');
-    // const dataDoc -ot most nem használom dataRef.ref().child(dataTable).child(dataDoc).set(dataFields)
-    //set helyett push-al teszem be az adatokat az adatbázisba, hogy minden rögzített adat
+    //most nem használom a db.collection(dataTable).doc(docName).set() fügvényt
+    //set helyett add-al teszem be az adatokat az adatbázisba, hogy minden rögzített adat
     // a firebase által generált unique document id-t kapjon
 
     const handleSelectionChange = (rendszam, fogyasztas, checked) => {
@@ -29,14 +29,12 @@ export default function UserInput() {
       const isCarSelected = selectedCars.hasOwnProperty(rendszam);
     
       if (!isCarSelected) {
-        console.log("első");
         // Ha a rendszám nincs az objektumban, akkor hozzáadom
         setSelectedCars(prevCars => ({
           ...prevCars,
           [rendszam]: { rendszam, fogyasztas }
         }));
       } else if (isCarSelected) {
-        console.log("masodik");
         // Ha a rendszám benne van az objektumban akkor törlöm
         const { [rendszam]: deletedCar, ...rest } = selectedCars;
         setSelectedCars(rest);
@@ -55,7 +53,7 @@ export default function UserInput() {
         }}
 
        //Kiválasztott e a felhasználó legalább egy autót
-        if (selectedCars.length === 0) {
+        if (Object.keys(selectedCars).length === 0) {
           setResponseStatus("Legalább egy járművet választanod kell!")
             setTimeout(() => {
                 setResponseStatus('');
@@ -88,9 +86,8 @@ export default function UserInput() {
           return;
         }
         //megnézem, hány autót választottak ki és
-        //anyiszor fogom az adatbázisba feltölteni az adatokat ahányat kijelöltek
+        //annyiszor fogom az adatbázisba feltölteni az adatokat ahányat kijelöltek
         //ez azért fontos, hogy a későbbi szűréseknél egyszerűbb dolgom legyen
-      
         for (let i = 0; i < Object.keys(modifiedCars).length; i++) {
           try {
              //lekérem az aktuális időt és beteszem a változókba
@@ -99,7 +96,9 @@ export default function UserInput() {
             const formattedTime = currentDateTime.toLocaleTimeString();
 
           // az adabázisba bekerülő strukturált adatok
-            const dataFields = {
+     
+
+          db.collection(dataCollection).add({
               dateAndtime: {
                 date: formattedDate,
                 time: formattedTime
@@ -116,33 +115,30 @@ export default function UserInput() {
                 hazszam: hovaHazszam
               },
               km: km,
-              rendszam: modifiedCars[i].rendszam,
-              fogyasztas: modifiedCars[i].fogyasztas
-            };
-        
-            // Elküldöm az adatokat a Firebase adatbázisnak
-            await dataRef.ref().child(dataTable).push(dataFields);
-            setResponseStatus('Sikeres mentés!');
-          } catch (error) {
-            console.error(error);
-            setResponseStatus('Ooopsz! Valami hiba történt');
-          } finally {
-            setTimeout(() => {
-               // Állapotok visszaállítása üres stringre
+              rendszam: modifiedCars[Object.keys(modifiedCars)[i]].rendszam,
+              fogyasztas: modifiedCars[Object.keys(modifiedCars)[i]].fogyasztas
+          })
+          setResponseStatus('Sikeres Mentés');
+         }
+          catch (error) {
+              setResponseStatus('Ooopsz! Valami hiba történt');
+          }
+          finally {
+          setTimeout(() => {
               setResponseStatus('');
               setHonnanTelepules('');
               setHonnanUtca('');
               setHonnanHazszam('');
+              setPartner('');
               setHovaTelepules('');
               setHovaUtca('');
               setHovaHazszam('');
-              setPartner('');
               setKm('');
             }, 1800);
           }
         }
-        
-} 
+      }
+
    return(
        <>
         <BackToHome/>

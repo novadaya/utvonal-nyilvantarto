@@ -1,53 +1,32 @@
 import BackToHome from "../Components/BackToHome";
 import { useEffect, useState } from 'react';
-import { dataRef } from "../Components/FirebaseConfig";
+import db from "../Components/FireStoreDb";
 import AllTotal from "../Components/allTotal";
 
 
 export default function DisplayUtvonalak() {
   const [utvonalak, setUtvonalak] = useState([]);
-  const dataTable = "utvonalak"; 
-  const [carList, setCarList] = useState([]);
+  const dataTable = "utvonalak";
   
   useEffect(() => {
     // Lekérem az összes útvonalat az adatbázisból
     const fetchData = async () => {
       try {
-        const snapshot = await dataRef.ref().child(dataTable).once('value');
+        const querySnapshot = await db.collection(dataTable).get();
         const utvonalakData = [];
 
-        snapshot.forEach((childSnapshot) => {
-          const utvonalData = childSnapshot.val();
+        querySnapshot.forEach((doc) => {
+          const utvonalData = doc.data();
           utvonalakData.push(utvonalData);
         });
 
-        // Beállítom az állapotot az összes útvonalra
         setUtvonalak(utvonalakData);
       } catch (error) {
         console.error('Ooopsz! Valami hiba történt!', error);
       }
     };
 
-    // Lekérem az autók adatait az adatbázisból
     fetchData();
-    const fetchCarData = async () => {
-      try {
-        const snapshot = await dataRef.ref('jarmuvek').once('value');
-        const cars = snapshot.val();
-        if (cars) {
-          const carArray = Object.keys(cars).map(rendszam => ({
-            rendszam,
-            marka: cars[rendszam].marka,
-            fogyasztas: cars[rendszam].fogyasztas,
-          }));
-          setCarList(carArray);
-        }
-      } catch (error) {
-        console.error('Oppsz! Valami hiba történt!', error);
-      }
-    };
-
-    fetchCarData();
   }, []);
 
   //keresés a talátlatok között
@@ -58,7 +37,7 @@ export default function DisplayUtvonalak() {
     <>
       <BackToHome/>
       <div className="box">
-       <div class="search">
+       <div className="search">
         <input placeholder="Keresés Rendszám alapján..." type="text" value={search} onChange={(e) => setSearch(e.target.value)}/>
       </div>
     </div>
@@ -66,9 +45,9 @@ export default function DisplayUtvonalak() {
       <h1>Rögzített útvonalak:</h1>
       <div className="box-container">
         {filteredUtvonalak.map((utvonal, index) => (
-          <div className="box">
+          <div className="box" key={index}>
             <ul>
-          <li key={index}>
+          <li>
             <h2>Rendszám: {utvonal.rendszam}</h2>
             <p>Honnan: {utvonal.honnan.telepules} {utvonal.honnan.utca} {utvonal.honnan.hazszam}</p>
             <p>Hova: {utvonal.hova.partner} {utvonal.hova.telepules} {utvonal.hova.utca} {utvonal.hova.hazszam}</p>

@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { dataRef } from './FirebaseConfig';
+import db from "./FireStoreDb";
 
 export default function CarList({ onSelectionChange }) {
   const [carList, setCarList] = useState([]);
 
+
   useEffect(() => {
-    // Lekérem az autók adatait a Firebase adatbázisból
+    
     const fetchData = async () => {
       try {
-        const snapshot = await dataRef.ref('jarmuvek').once('value');
-        const cars = snapshot.val();
-        if (cars) {
-          const carArray = Object.keys(cars).map(rendszam => ({
-            rendszam,
-            marka: cars[rendszam].marka,
-            fogyasztas: cars[rendszam].fogyasztas,
-          }));
-          setCarList(carArray);
-        }
+        const snapshot = await db.collection('jarmuvek').get(); // Lekérdezés az 'jarmuvek' kollekcióra
+        const cars = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCarList(cars);
       } catch (error) {
-        console.error('Hiba adatainak lekérése közben:', error);
+        console.error('Hiba az adatok lekérése közben:', error);
       }
     };
 
     fetchData();
   }, []);
   // Itt adom át a parent komponensnek a szükséges adatokat
-  const handleCheckboxChange = (rendszam, fogyasztas, checked) => {
-    onSelectionChange(rendszam, fogyasztas, checked);
+  const handleCheckboxChange = (rendszam, fogyasztas) => {
+    onSelectionChange(rendszam, fogyasztas);
   };
 
 

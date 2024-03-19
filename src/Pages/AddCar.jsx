@@ -1,6 +1,6 @@
 import BackToHome from "../Components/BackToHome";
-import React, { useState, useRef} from 'react';
-import { dataRef } from "../Components/FirebaseConfig";
+import React, { useState} from 'react';
+import db from "../Components/FireStoreDb";
 import '../App.css';
 
 export default function AddCar() {
@@ -32,27 +32,26 @@ export default function AddCar() {
           }, 1800);
             return;
         }
-            //létrehozom az adatbázisba rögzítéshez szükséges mezőket
-            try {
-                const dataFields = {
+            //rögzítem az adatbázisba a szükséges adatokat
+      
+                db.collection(dataCollection).doc(rendszam).set({
                     rendszam: rendszam,
                     marka: marka,
                     fogyasztas: fogyasztas,
-                };
-    
-                await dataRef.ref().child(dataCollection).child(rendszam).set(dataFields); 
-                setRendszam("");
-                setMarka('');
-                setFogyasztas('');
-                setResponseStatus('Sikeres mentés!');
-            } catch (error) {
-                setResponseStatus('Ooopsz! Valami hiba történt');
-            }finally {
+                })
+                .then((docRef) => {
+                    setRendszam("");
+                    setMarka('');
+                    setFogyasztas('');
+                    setResponseStatus('Sikeres mentés!');
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setResponseStatus('Ooopsz! Valami hiba történt');
+                });
                 setTimeout(() => {
                     setResponseStatus('');
                   }, 1800);
-            }
-            
     }
 
     return (

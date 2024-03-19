@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { dataRef } from "./FirebaseConfig";
+import db from './FireStoreDb';
 
 const AllTotal = () => {
     // Inicializálom az állapotokat az eredmények összesítéséhez
@@ -8,22 +8,23 @@ const AllTotal = () => {
   
     useEffect(() => {
       // Jarmuvek collection elérése a Realtime Database-ben
-      const jarmuvekRef = dataRef.ref('utvonalak');
+      const jarmuvekRef = db.collection('utvonalak');
   
       // Az összes dokumentum lekérdezése
-      jarmuvekRef.once('value')
-        .then((snapshot) => {
+      jarmuvekRef.get()
+        .then((querySnapshot)  => {
           let totalKmSum = 0;
           let totalConsumptionSum = 0;
   
           // Minden dokumentumon végigmegyünk
-          snapshot.forEach((childSnapshot) => {
+          querySnapshot.forEach((doc) => {
             // Adatok kiolvasása a dokumentumból
-            const { km, fogyasztas } = childSnapshot.val();
-          
+            const { km, fogyasztas } = doc.data();
+            //Adatokat számértékké alakítom
+            let formatedKm = parseInt(km);
+            let formatedFogyasztas = parseFloat(fogyasztas);
             // Az összesített értékeket frissítem
-            totalKmSum += km * 1;
-            let formatedFogyasztas = fogyasztas.replace(/,/, '.');
+            totalKmSum += formatedKm;
             totalConsumptionSum += km * formatedFogyasztas  / 100;
            
           });
