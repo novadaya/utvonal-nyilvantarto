@@ -1,7 +1,7 @@
 import BackToHome from "../Components/BackToHome";
 import { useEffect, useState } from 'react';
 import db from "../Components/FireStoreDb";
-import AllTotal from "../Components/allTotal";
+import AllTotal from "../Components/AllTotal";
 
 
 export default function DisplayUtvonalak() {
