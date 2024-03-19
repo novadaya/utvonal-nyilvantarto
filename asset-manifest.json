@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/utvonal-nyilvantarto/static/css/main.ab090361.css",
-    "main.js": "/utvonal-nyilvantarto/static/js/main.96e05973.js",
+    "main.js": "/utvonal-nyilvantarto/static/js/main.a2791803.js",
     "static/js/453.853183b0.chunk.js": "/utvonal-nyilvantarto/static/js/453.853183b0.chunk.js",
     "static/media/tablat-back-big.webp": "/utvonal-nyilvantarto/static/media/tablat-back-big.1a94eef8cd370f6dbeeb.webp",
     "index.html": "/utvonal-nyilvantarto/index.html",
     "main.ab090361.css.map": "/utvonal-nyilvantarto/static/css/main.ab090361.css.map",
-    "main.96e05973.js.map": "/utvonal-nyilvantarto/static/js/main.96e05973.js.map",
+    "main.a2791803.js.map": "/utvonal-nyilvantarto/static/js/main.a2791803.js.map",
     "453.853183b0.chunk.js.map": "/utvonal-nyilvantarto/static/js/453.853183b0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ab090361.css",
-    "static/js/main.96e05973.js"
+    "static/js/main.a2791803.js"
   ]
 }
