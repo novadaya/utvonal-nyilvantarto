@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.9810c255.css",
+    "main.js": "/static/js/main.e831e86d.js",
+    "static/js/453.853183b0.chunk.js": "/static/js/453.853183b0.chunk.js",
+    "static/media/tablat-back-big.webp": "/static/media/tablat-back-big.1a94eef8cd370f6dbeeb.webp",
+    "index.html": "/index.html",
+    "main.9810c255.css.map": "/static/css/main.9810c255.css.map",
+    "main.e831e86d.js.map": "/static/js/main.e831e86d.js.map",
+    "453.853183b0.chunk.js.map": "/static/js/453.853183b0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9810c255.css",
+    "static/js/main.e831e86d.js"
+  ]
+}
