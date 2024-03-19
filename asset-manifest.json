@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/utvonal-nyilvantarto/static/css/main.ab090361.css",
-    "main.js": "/utvonal-nyilvantarto/static/js/main.a2791803.js",
-    "static/js/453.853183b0.chunk.js": "/utvonal-nyilvantarto/static/js/453.853183b0.chunk.js",
-    "static/media/tablat-back-big.webp": "/utvonal-nyilvantarto/static/media/tablat-back-big.1a94eef8cd370f6dbeeb.webp",
-    "index.html": "/utvonal-nyilvantarto/index.html",
-    "main.ab090361.css.map": "/utvonal-nyilvantarto/static/css/main.ab090361.css.map",
-    "main.a2791803.js.map": "/utvonal-nyilvantarto/static/js/main.a2791803.js.map",
-    "453.853183b0.chunk.js.map": "/utvonal-nyilvantarto/static/js/453.853183b0.chunk.js.map"
+    "main.css": "./static/css/main.d147f445.css",
+    "main.js": "./static/js/main.69cef644.js",
+    "static/js/453.853183b0.chunk.js": "./static/js/453.853183b0.chunk.js",
+    "static/media/tablat-back-big.webp": "./static/media/tablat-back-big.1a94eef8cd370f6dbeeb.webp",
+    "index.html": "./index.html",
+    "main.d147f445.css.map": "./static/css/main.d147f445.css.map",
+    "main.69cef644.js.map": "./static/js/main.69cef644.js.map",
+    "453.853183b0.chunk.js.map": "./static/js/453.853183b0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ab090361.css",
-    "static/js/main.a2791803.js"
+    "static/css/main.d147f445.css",
+    "static/js/main.69cef644.js"
   ]
 }
